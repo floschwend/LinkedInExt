@@ -13,32 +13,27 @@ function calculateJapanesePercentage(str) {
 
 function filterJobs() {
   const jobCards = Array.from(document.getElementsByClassName("jobs-search-results__list-item"));
-
+  
   jobCards.forEach(card => {
-    const titleElements = card.getElementsByClassName("job-card-list__title");
-    if (titleElements == 0)
-      return;
+      const titleElement = card.querySelector(".job-card-list__title");
+      const title = titleElement?.getAttribute("aria-label") || "";
 
-    const titleElement = titleElements[0];
-    if (!titleElement)
-      return;
-
-    const title = titleElements[0]?.getAttribute("aria-label") || "";
-
-    const isNew = (card.getElementsByTagName("time").length > 0);
-    const japanesePercentage = parseFloat(calculateJapanesePercentage(title));
-
-    const isSelected = (card.getElementsByClassName("jobs-search-results-list__list-item--active").length > 0);
-
-    // Example filtering logic (customize based on your needs)
-    if (!isSelected && (!isNew || japanesePercentage > 70)) {
-      card.style.display = 'none';
-      //card.style.backgroundColor = 'red'
-    }
+      const isNew = card.querySelector("time") !== null;
+      const japanesePercentage = parseFloat(calculateJapanesePercentage(title));
+      const isSelected = card.getElementsByClassName("jobs-search-results-list__list-item--active").length > 0;
+      
+      const shouldHide = !isSelected && (!isNew || japanesePercentage > 70);
+      
+      if (shouldHide) {
+          card.style.display = 'none';
+      }
   });
 }
 
 // Run the filter when the page loads and whenever it changes
 filterJobs();
-const observer = new MutationObserver(filterJobs);
-observer.observe(document.body, { childList: true, subtree: true });
+const observerFilter = new MutationObserver(filterJobs);
+
+const listParent = document.getElementsByClassName("jobs-search-results__list-item")[0].parentElement;
+observerFilter.observe(listParent, { childList: true, subtree: true });
+
