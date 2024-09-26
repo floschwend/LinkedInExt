@@ -44,6 +44,7 @@ function init() {
 
   if(!listParent || !descriptionContainer) {
     window.setTimeout(init,500);
+    return;
   }
 
   listObserver.observe(listParent, { childList: true, subtree: false });
