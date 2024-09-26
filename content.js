@@ -12,22 +12,34 @@ function calculateJapanesePercentage(str) {
 }
 
 function filterJobs() {
-  const jobCards = Array.from(document.getElementsByClassName("jobs-search-results__list-item"));
+  window.setTimeout(() => {
+    const jobCards = $("li.jobs-search-results__list-item");
 
-  jobCards.forEach(card => {
-    const titleElement = card.querySelector(".job-card-list__title");
-    const title = titleElement?.getAttribute("aria-label") || "";
+    jobCards.each((i, card) => {
 
-    const isNew = card.querySelector("time") !== null;
-    const japanesePercentage = parseFloat(calculateJapanesePercentage(title));
-    const isSelected = card.getElementsByClassName("jobs-search-results-list__list-item--active").length > 0;
+      if(!$(card)) {
+        return;
+      }
 
-    const shouldHide = !isSelected && (!isNew || japanesePercentage > 70);
+      const titleElement = $(card).find(".job-card-list__title").first();
+      const title = titleElement?.attr("aria-label") || "";
 
-    if (shouldHide) {
-      card.style.opacity = 0.15;
-    }
-  });
+      const isNew = $(card).find("time").length > 0;
+      const japanesePercentage = parseFloat(calculateJapanesePercentage(title));
+      const isSelected = $(card).find(".jobs-search-results-list__list-item--active").length > 0;
+
+      const shouldHide = !isSelected && (!isNew || japanesePercentage > 70);
+
+      console.log(title + " = " + isNew + "/" + japanesePercentage + "/" + isSelected);
+
+      if (shouldHide) {
+        $(card).css("opacity", 0.15);
+      }
+      else {
+        $(card).css("opacity", '');
+      }
+    });
+  }, 200);
 }
 
 function highlightJapaneseWord() {
