@@ -13,27 +13,43 @@ function calculateJapanesePercentage(str) {
 
 function filterJobs() {
   const jobCards = Array.from(document.getElementsByClassName("jobs-search-results__list-item"));
-  
-  jobCards.forEach(card => {
-      const titleElement = card.querySelector(".job-card-list__title");
-      const title = titleElement?.getAttribute("aria-label") || "";
 
-      const isNew = card.querySelector("time") !== null;
-      const japanesePercentage = parseFloat(calculateJapanesePercentage(title));
-      const isSelected = card.getElementsByClassName("jobs-search-results-list__list-item--active").length > 0;
-      
-      const shouldHide = !isSelected && (!isNew || japanesePercentage > 70);
-      
-      if (shouldHide) {
-          card.style.display = 'none';
-      }
+  jobCards.forEach(card => {
+    const titleElement = card.querySelector(".job-card-list__title");
+    const title = titleElement?.getAttribute("aria-label") || "";
+
+    const isNew = card.querySelector("time") !== null;
+    const japanesePercentage = parseFloat(calculateJapanesePercentage(title));
+    const isSelected = card.getElementsByClassName("jobs-search-results-list__list-item--active").length > 0;
+
+    const shouldHide = !isSelected && (!isNew || japanesePercentage > 70);
+
+    if (shouldHide) {
+      card.style.opacity = 0.15;
+    }
   });
 }
 
-// Run the filter when the page loads and whenever it changes
-filterJobs();
-const observerFilter = new MutationObserver(filterJobs);
+function highlightJapaneseWord() {
+  $(".highlight").css({ backgroundColor: "red", fontWeight: "bold" });
+  $(".jobs-details").highlight(["Japanese", "Japanisch", "Bilingual"]);
+}
 
-const listParent = document.getElementsByClassName("jobs-search-results__list-item")[0].parentElement;
-observerFilter.observe(listParent, { childList: true, subtree: true });
+function init() {
+  filterJobs();
+  const listObserver = new MutationObserver(filterJobs);
 
+  const listParent =  document.querySelectorAll("ul.scaffold-layout__list-container")[0];
+  const descriptionContainer = document.querySelectorAll("div.jobs-description-content")[0];
+
+  if(!listParent || !descriptionContainer) {
+    window.setTimeout(init,500);
+  }
+
+  listObserver.observe(listParent, { childList: true, subtree: false });
+ 
+  const descriptionObserver = new MutationObserver(highlightJapaneseWord);
+  descriptionObserver.observe(descriptionContainer, { childList: true, subtree: true });
+}
+
+$(init);
