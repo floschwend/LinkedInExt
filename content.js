@@ -31,24 +31,26 @@ function filterJobs() {
 }
 
 function highlightJapaneseWord() {
-  $(".highlight").css({ backgroundColor: "red", fontWeight: "bold" });
-  $(".jobs-details").highlight(["Japanese", "Japanisch", "Bilingual"]);
+  window.setTimeout(() => {
+    $(".highlight").css({ backgroundColor: "red", fontWeight: "bold" });
+    $(".jobs-details").highlight(["Japanese", "Japanisch", "Bilingual"]);
+  }, 500);
 }
 
 function init() {
   filterJobs();
   const listObserver = new MutationObserver(filterJobs);
 
-  const listParent =  document.querySelectorAll("ul.scaffold-layout__list-container")[0];
+  const listParent = document.querySelectorAll("ul.scaffold-layout__list-container")[0];
   const descriptionContainer = document.querySelectorAll("div.jobs-description-content")[0];
 
-  if(!listParent || !descriptionContainer) {
-    window.setTimeout(init,500);
+  if (!listParent || !descriptionContainer) {
+    window.setTimeout(init, 500);
     return;
   }
 
   listObserver.observe(listParent, { childList: true, subtree: false });
- 
+
   const descriptionObserver = new MutationObserver(highlightJapaneseWord);
   descriptionObserver.observe(descriptionContainer, { childList: true, subtree: true });
 }
