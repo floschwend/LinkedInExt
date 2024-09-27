@@ -30,8 +30,6 @@ function filterJobs() {
 
       const shouldHide = !isSelected && (!isNew || japanesePercentage > 70);
 
-      console.log(title + " = " + isNew + "/" + japanesePercentage + "/" + isSelected);
-
       if (shouldHide) {
         $(card).css("opacity", 0.15);
       }
@@ -47,7 +45,34 @@ function highlightJapaneseWord() {
   $(".jobs-details").highlight(["Japanese", "Japanisch", "Bilingual"]);
 }
 
+function linkChanged(mutations, observer) {
+  var titleLink = mutations[0].target;
+  var span = $(titleLink).find("span.highlight");
+  if(!span) return;
+
+  var spanIndex = $(titleLink).contents().index(span);
+  if(spanIndex >= 0) {
+    $(titleLink).contents().slice(spanIndex).remove();
+  }
+}
+
 function init() {
+
+  var titleLinkObj = $("div.job-details-jobs-unified-top-card__job-title").find("a");
+  var titleLink = titleLinkObj.first()[0];
+
+  if (!titleLink) {
+    window.setTimeout(init, 200);
+    return;
+  }
+
+  var observer = new MutationObserver(linkChanged);
+  observer.observe(titleLink, {
+    attributes: true,
+    attributeFilter: ['href']
+  });
+
+  titleLink.dataset.selectContentVal = 1;
 
   window.setInterval(filterJobs, 500);
   window.setInterval(highlightJapaneseWord, 500);
