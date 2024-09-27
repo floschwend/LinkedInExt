@@ -47,12 +47,21 @@ function highlightJapaneseWord() {
 
 function linkChanged(mutations, observer) {
   var titleLink = mutations[0].target;
-  var span = $(titleLink).find("span.highlight");
+  cleanUp(titleLink);
+
+  var h2 = $("div.job-details-jobs-unified-top-card__title-container").find("h2")[0];
+  if(h2) {
+    cleanUp(h2);
+  }
+}
+
+function cleanUp(targetElement) {
+  var span = $(targetElement).find("span.highlight");
   if(!span) return;
 
-  var spanIndex = $(titleLink).contents().index(span);
+  var spanIndex = $(targetElement).contents().index(span);
   if(spanIndex >= 0) {
-    $(titleLink).contents().slice(spanIndex).remove();
+    $(targetElement).contents().slice(spanIndex).remove();
   }
 }
 
