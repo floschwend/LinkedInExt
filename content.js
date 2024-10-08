@@ -42,7 +42,7 @@ function filterJobs() {
 
 function highlightJapaneseWord() {
   $(".highlight").css({ backgroundColor: "red", fontWeight: "bold" });
-  $(".jobs-details").highlight(["Japanese", "Japanisch", "Bilingual"]);
+  $(".jobs-details").highlight(["Japanese", "Japanisch", "Bilingual", "JLPT"]);
 }
 
 function linkChanged(mutations, observer) {
